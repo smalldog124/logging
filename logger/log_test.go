@@ -17,7 +17,7 @@ func UUID() string {
 	return "6b66cff4-e0ad-11e8-9820-f40f2430c31d"
 }
 func Test_ListUser_Method_GET_Should_Be_1_Line_Of_Log_Info(t *testing.T) {
-	expected := `INFO:{"requestID":"6b66cff4-e0ad-11e8-9820-f40f2430c31d","status_code":200,"body":{"age":"20","name":"Smalldog"},"response_time":"0.00 ms"}
+	expected := `INFO:Send Response {"requestID":"6b66cff4-e0ad-11e8-9820-f40f2430c31d","status_code":200,"body":{"age":"20","name":"Smalldog"},"response_time":"0.00 ms"}
 `
 	buffer := &bytes.Buffer{}
 	logging := log.New(buffer, "INFO:", 0)

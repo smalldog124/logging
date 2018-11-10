@@ -33,7 +33,7 @@ func LoggingMiddleware(logger *log.Logger, UUID func() string) gin.HandlerFunc {
 			ResponseTime: fomatTimeToMillisecond(durationTime),
 		}
 		responseLogJson, _ := json.Marshal(responseLog)
-		logger.Printf("%s", string(responseLogJson))
+		logger.Printf("Send Response %s", string(responseLogJson))
 	}
 }
 
