@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type ResponseLog struct {
@@ -34,6 +35,11 @@ func LoggingMiddleware(logger *log.Logger, UUID func() string) gin.HandlerFunc {
 		responseLogJson, _ := json.Marshal(responseLog)
 		logger.Printf("%s", string(responseLogJson))
 	}
+}
+
+func NewUUID() string {
+	uuid, _ := uuid.NewUUID()
+	return uuid.String()
 }
 
 func fomatTimeToMillisecond(timemer time.Duration) string {
