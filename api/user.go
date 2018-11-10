@@ -11,6 +11,11 @@ type User struct {
 	Age  string `json:"age"`
 }
 
+func responseOK(context *gin.Context, data interface{}) {
+	context.JSON(http.StatusOK, data)
+	context.Set("responseBody", data)
+}
+
 func ListUser(context *gin.Context) {
 	user := []User{
 		{
@@ -22,5 +27,5 @@ func ListUser(context *gin.Context) {
 			Age:  "18",
 		},
 	}
-	context.JSON(http.StatusOK, user)
+	responseOK(context, user)
 }
