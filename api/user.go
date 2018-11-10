@@ -1,6 +1,7 @@
 package api
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -39,5 +40,16 @@ func GetUserHandler(context *gin.Context) {
 		Name: "Smalldog",
 		Age:  "20",
 	}
+	responseOK(context, user)
+}
+
+func CreateUserHandler(context *gin.Context) {
+	var user User
+	err := context.ShouldBindJSON(&user)
+	if err != nil {
+		log.Println("can not bind json", err)
+		return
+	}
+	user.ID = 4
 	responseOK(context, user)
 }

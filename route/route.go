@@ -13,5 +13,6 @@ func NewRoute(logging *log.Logger) *gin.Engine {
 	route.Use(logger.LoggingMiddleware(logging, logger.NewUUID))
 	route.GET("api/v1/user", api.ListUserHandler)
 	route.GET("api/v1/user/:id", api.GetUserHandler)
+	route.POST("api/v1/user", api.CreateUserHandler)
 	return route
 }
