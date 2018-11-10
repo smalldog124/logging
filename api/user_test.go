@@ -29,7 +29,7 @@ func Test_ListUserHandler_Should_Be_Array_User(t *testing.T) {
 
 func Test_GetUserHandler_Input_UserID_1_Should_Be_User(t *testing.T) {
 	expectUser := `{"id":1,"name":"Smalldog","age":"20"}`
-	request := httptest.NewRequest("POST", "/api/v1/user/1", nil)
+	request := httptest.NewRequest("GET", "/api/v1/user/1", nil)
 	writer := httptest.NewRecorder()
 	buffer := &bytes.Buffer{}
 	logging := log.New(buffer, "INFO:", 0)
