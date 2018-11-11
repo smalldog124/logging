@@ -9,17 +9,14 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type ResponseLog struct {
-	RequestID    string      `json:"requestID"`
-	StatusCode   int         `json:"status_code"`
-	Body         interface{} `json:"body"`
-	ResponseTime string      `json:"response_time"`
-}
-
 func LoggingMiddleware(logger *logrus.Logger, UUID func() string) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		startRequestTime := time.Now()
 		requestID := UUID()
+		requestLog := map[string]interface{}{
+			"requestID": requestID,
+		}
+		logger.Infof("After Request [%s] %s %v", context.Request.Method, context.Request.URL.Path, requestLog)
 
 		context.Next()
 

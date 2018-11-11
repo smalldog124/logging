@@ -52,7 +52,7 @@ func (api UserAPI) CreateUserHandler(context *gin.Context) {
 	var user User
 	err := context.ShouldBindJSON(&user)
 	if err != nil {
-		api.Logger.Info("can not bind json", err)
+		api.Logger.Errorln("can not bind json", err)
 		return
 	}
 	user.ID = 4
