@@ -4,6 +4,8 @@ import (
 	"log"
 	"logging/route"
 	"os"
+
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
@@ -12,7 +14,10 @@ func main() {
 		log.Fatalln("Failed to open log file", err)
 	}
 	defer file.Close()
-	logging := log.New(file, "INFO:", log.Ldate|log.Ltime|log.Lshortfile)
+	// logging := log.New(file, "INFO:", log.Ldate|log.Ltime|log.Lshortfile)
+	logging := logrus.New()
+	logging.SetOutput(file)
+	logging.SetFormatter(&logrus.JSONFormatter{})
 	route := route.NewRoute(logging)
 	route.Run(":3000")
 }

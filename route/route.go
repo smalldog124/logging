@@ -1,14 +1,14 @@
 package route
 
 import (
-	"log"
 	"logging/api"
 	"logging/logger"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
-func NewRoute(logging *log.Logger) *gin.Engine {
+func NewRoute(logging *logrus.Logger) *gin.Engine {
 	route := gin.Default()
 	route.Use(logger.LoggingMiddleware(logging, logger.NewUUID))
 	route.GET("api/v1/user", api.ListUserHandler)

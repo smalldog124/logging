@@ -1,13 +1,12 @@
 package logger
 
 import (
-	"encoding/json"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/sirupsen/logrus"
 )
 
 type ResponseLog struct {
@@ -17,7 +16,7 @@ type ResponseLog struct {
 	ResponseTime string      `json:"response_time"`
 }
 
-func LoggingMiddleware(logger *log.Logger, UUID func() string) gin.HandlerFunc {
+func LoggingMiddleware(logger *logrus.Logger, UUID func() string) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		startRequestTime := time.Now()
 		requestID := UUID()
@@ -26,14 +25,13 @@ func LoggingMiddleware(logger *log.Logger, UUID func() string) gin.HandlerFunc {
 
 		durationTime := time.Since(startRequestTime)
 		responeBody, _ := context.Get("responseBody")
-		responseLog := ResponseLog{
-			RequestID:    requestID,
-			StatusCode:   context.Writer.Status(),
-			Body:         responeBody,
-			ResponseTime: fomatTimeToMillisecond(durationTime),
+		responseLog := map[string]interface{}{
+			"requestID":    requestID,
+			"statusCode":   context.Writer.Status(),
+			"body":         responeBody,
+			"responseTime": fomatTimeToMillisecond(durationTime),
 		}
-		responseLogJson, _ := json.Marshal(responseLog)
-		logger.Printf("Send Response %s", string(responseLogJson))
+		logger.Infof("Send Response %v", responseLog)
 	}
 }
 
