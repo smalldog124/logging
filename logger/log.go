@@ -1,7 +1,11 @@
 package logger
 
 import (
+	"encoding/json"
+	"bytes"
+	"io/ioutil"
 	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -16,7 +20,17 @@ func LoggingMiddleware(logger *logrus.Logger, UUID func() string) gin.HandlerFun
 		requestLog := map[string]interface{}{
 			"requestID": requestID,
 		}
-		logger.Infof("After Request [%s] %s %v", context.Request.Method, context.Request.URL.Path, requestLog)
+		if context.Request.Method == http.MethodPost {
+			requestBody, err := ioutil.ReadAll(context.Request.Body)
+			if err != nil {
+				logger.Error(err)
+			}
+			jsonBody := make(map[string]interface{})
+			json.Unmarshal(requestBody, &jsonBody)
+			requestLog["body"] = jsonBody
+			context.Request.Body = ioutil.NopCloser(bytes.NewBuffer(requestBody))
+		}
+		logger.Infof("After Request [%s] %s %v", context.Request.Method, context.Request.URL.String(), requestLog)
 
 		context.Next()
 

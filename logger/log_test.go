@@ -1,6 +1,8 @@
 package logger_test
 
 import (
+	"encoding/json"
+	"logging/api"
 	"bytes"
 	"logging/logger"
 	"net/http"
@@ -39,5 +41,32 @@ func Test_ListUser_Method_GET_Should_Be_1_Line_Of_Log_Info_Request(t *testing.T)
 	writer := httptest.NewRecorder()
 	route.ServeHTTP(writer, request)
 	// t.Errorf("actual\n '%s'\n expect\n '%s'", buffer.String(), expected)
+	assert.Equal(t, expected, buffer.String())
+}
+
+func Test_ListUser_Method_POST_Should_Be_1_Line_Of_Log_Info_Request(t *testing.T) {
+	expected := `{"level":"info","msg":"After Request [POST] /users map[requestID:6b66cff4-e0ad-11e8-9820-f40f2430c31d body:map[id:0 name:Kaven age:23]]"}
+{"level":"info","msg":"Send Response map[requestID:6b66cff4-e0ad-11e8-9820-f40f2430c31d statusCode:200 body:map[name:Kaven age:23] responseTime:0.00 ms]"}
+`
+	buffer := &bytes.Buffer{}
+	logging := logrus.New()
+	logging.SetOutput(buffer)
+	logging.SetFormatter(&logrus.JSONFormatter{DisableTimestamp: true})
+
+	route := gin.Default()
+	route.Use(logger.LoggingMiddleware(logging, UUID))
+	route.POST("users", func(context *gin.Context) {
+		response := gin.H{"name": "Kaven", "age": "23"}
+		context.JSON(http.StatusOK, response)
+		context.Set("statusCode", http.StatusOK)
+		context.Set("responseBody", response)
+	})
+
+	user := api.User{Name: "Kaven", Age: "23"}
+	data, _ := json.Marshal(user)
+	request, _ := http.NewRequest("POST", "/users", bytes.NewBuffer(data))
+	writer := httptest.NewRecorder()
+	route.ServeHTTP(writer, request)
+	t.Errorf("actual\n '%s'\n expect\n '%s'", buffer.String(), expected)
 	assert.Equal(t, expected, buffer.String())
 }
