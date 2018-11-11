@@ -1,10 +1,10 @@
 package api_test
 
 import (
+	"github.com/sirupsen/logrus"
 	"bytes"
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"logging/api"
 	"logging/route"
 	"net/http/httptest"
@@ -18,9 +18,13 @@ func Test_ListUserHandler_Should_Be_Array_User(t *testing.T) {
 	request := httptest.NewRequest("GET", "/api/v1/user", nil)
 	writer := httptest.NewRecorder()
 	buffer := &bytes.Buffer{}
-	logging := log.New(buffer, "INFO:", 0)
+	logging := logrus.New()
+	logging.SetOutput(buffer)
+	api := api.UserAPI{
+		Logger: logging,
+	}
 
-	route := route.NewRoute(logging)
+	route := route.NewRoute(logging, api)
 	route.ServeHTTP(writer, request)
 	response := writer.Result()
 
@@ -34,9 +38,13 @@ func Test_GetUserHandler_Input_UserID_1_Should_Be_User(t *testing.T) {
 	request := httptest.NewRequest("GET", "/api/v1/user/1", nil)
 	writer := httptest.NewRecorder()
 	buffer := &bytes.Buffer{}
-	logging := log.New(buffer, "INFO:", 0)
+	logging := logrus.New()
+	logging.SetOutput(buffer)
+	api := api.UserAPI{
+		Logger: logging,
+	}
 
-	route := route.NewRoute(logging)
+	route := route.NewRoute(logging, api)
 	route.ServeHTTP(writer, request)
 	response := writer.Result()
 
@@ -52,9 +60,13 @@ func Test_CreateUserHandler_Input_UserName_Kaven_And_Age_23_Should_Be_User(t *te
 	request := httptest.NewRequest("POST", "/api/v1/user", bytes.NewBuffer(data))
 	writer := httptest.NewRecorder()
 	buffer := &bytes.Buffer{}
-	logging := log.New(buffer, "INFO:", 0)
+	logging := logrus.New()
+	logging.SetOutput(buffer)
+	api := api.UserAPI{
+		Logger: logging,
+	}
 
-	route := route.NewRoute(logging)
+	route := route.NewRoute(logging, api)
 	route.ServeHTTP(writer, request)
 	response := writer.Result()
 

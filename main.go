@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"logging/api"
 	"logging/route"
 	"os"
 
@@ -18,6 +19,9 @@ func main() {
 	logging := logrus.New()
 	logging.SetOutput(file)
 	logging.SetFormatter(&logrus.JSONFormatter{})
-	route := route.NewRoute(logging)
+	apiUser := api.UserAPI{
+		Logger: logging,
+	}
+	route := route.NewRoute(logging, apiUser)
 	route.Run(":3000")
 }
